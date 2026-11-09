@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/hmatrix.dir/link.d CMakeFiles/hmatrix.dir/src/main.c.o CMakeFiles/hmatrix.dir/src/animation.c.o CMakeFiles/hmatrix.dir/src/renderer.c.o CMakeFiles/hmatrix.dir/src/config.c.o CMakeFiles/hmatrix.dir/src/cli.c.o -o hmatrix  libtomlc17.a /usr/lib/libncursesw.so /usr/lib/libformw.so
