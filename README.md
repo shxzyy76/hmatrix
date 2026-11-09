@@ -61,57 +61,27 @@ cd hmatrix
 
 ### Build
 
+to build it run the following command
+locate the cloned repository on your local machine and cd it in the terminal and run the setup.sh
+before running it making it executable:
 ```bash
-cmake -B build
-cmake --build build
+chmod +x setup.sh
 ```
-
-### Run
-
+then run it:
 ```bash
-./build/hmatrix
-```
-
-### Optional: Install system-wide
-
-```bash
-sudo cmake --install build
-```
-
-Or install locally:
-
-```bash
-cmake --install build --prefix ~/.local
+./setup.sh
 ```
 
 Make sure `~/.local/bin` is in your `PATH` for a local installation.
 
-## Usage
-
+### How to run it
 ```bash
 hmatrix
-hmatrix --config ./my.toml
-hmatrix --help
-hmatrix --version
 ```
+this will run the command
 
-### Keyboard Controls
-
-| Key          | Action            |
-| ------------ | ----------------- |
-| `Q` or `Esc` | Quit              |
-| `P`          | Pause / Resume    |
-| `R`          | Restart animation |
-
-## Configuration
-
-HMatrix uses a TOML configuration file to customize its appearance and behavior.
-
-The default configuration is located at:
-
-```text
-config/hmatrix.toml
-```
+### How to Configure it
+to configure it go inside your home directory inside the .config folder and you will find hmatrix/hmatrix.toml
 
 You can customize:
 
@@ -122,6 +92,15 @@ You can customize:
 - Frame rate.
 - Background transparency.
 - Initial animation behavior.
+
+### Keyboard Controls
+
+| Key          | Action            |
+| ------------ | ----------------- |
+| `Q` or `Esc` | Quit              |
+| `P`          | Pause / Resume    |
+| `R`          | Restart animation |
+
 
 See [`config/hmatrix.toml`](config/hmatrix.toml) for all available options and their descriptions.
 
