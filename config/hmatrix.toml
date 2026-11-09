@@ -15,7 +15,7 @@
 [general]
 # Target frames per second. Lower values use less CPU; higher values look smoother.
 # Accepted: integer 1-240.  Default: 30
-fps = 60
+fps = 30
 
 # true  = draw only the characters and leave the terminal's own background
 #         (including transparency) visible.
@@ -30,13 +30,13 @@ transparent_background = true
 # a character makes it more likely (e.g. "0001" shows more zeros).
 # Accepted: string of 1-64 printable ASCII characters, no spaces.  Default: "01"
 # Example (hex digits):  chars = "0123456789ABCDEF"
-chars = "0123456789ABCDEF"
+chars = "01"
 
 # How often characters already on screen change to a new random one
 # (the shimmer effect), as changes per character per second.
 # 0 = characters never change once created.
 # Accepted: number 0-20.  Default: 0.6
-change_rate = 3
+change_rate = 0.6
 
 
 [appearance]
@@ -80,8 +80,8 @@ dim_trail = false
 # Accepted: number 0.5-200.  Defaults: speed_min = 6, speed_max = 30
 # Dependency: speed_min must not exceed speed_max, otherwise both revert to
 # their defaults.
-speed_min = 30
-speed_max = 60
+speed_min = 5
+speed_max = 30
 
 # Each stream gets a random length between length_min and length_max,
 # measured in characters (including the head).
