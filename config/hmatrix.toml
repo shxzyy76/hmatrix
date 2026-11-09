@@ -1,0 +1,118 @@
+# HMatrix configuration
+#
+# Default lookup when --config is not given (first file found wins):
+#   1. ~/.config/hmatrix/hmatrix.toml
+#   2. config/hmatrix.toml in the source tree (relative to the executable,
+#      so ./build/hmatrix picks up this file) or, when installed,
+#      share/hmatrix/hmatrix.toml
+# Or pass a different file with:  hmatrix --config PATH
+#
+# Every option below is shown with its default value, so this file reproduces
+# the built-in classic green binary rain. Delete any option to use its default.
+# Invalid or unknown entries are reported on stderr and ignored; the default
+# is used instead. Restart hmatrix to apply changes.
+
+[general]
+# Target frames per second. Lower values use less CPU; higher values look smoother.
+# Accepted: integer 1-240.  Default: 30
+fps = 60
+
+# true  = draw only the characters and leave the terminal's own background
+#         (including transparency) visible.
+# false = fill the screen with solid black behind the characters.
+# Accepted: true or false.  Default: true
+# Limitation: false has no effect on terminals without color support.
+transparent_background = true
+
+
+[characters]
+# Characters used for the rain. Each position picks one at random, so repeating
+# a character makes it more likely (e.g. "0001" shows more zeros).
+# Accepted: string of 1-64 printable ASCII characters, no spaces.  Default: "01"
+# Example (hex digits):  chars = "0123456789ABCDEF"
+chars = "0123456789ABCDEF"
+
+# How often characters already on screen change to a new random one
+# (the shimmer effect), as changes per character per second.
+# 0 = characters never change once created.
+# Accepted: number 0-20.  Default: 0.6
+change_rate = 3
+
+
+[appearance]
+# Colors accept a basic name (black, red, green, yellow, blue, magenta, cyan,
+# white) or a hex value "#rrggbb". Names use your terminal theme's palette.
+# Hex values are snapped to the nearest color in the 256-color palette; on
+# terminals with fewer than 256 colors they fall back to the nearest of the
+# 8 basic colors, and the trail is always dimmed.
+
+# Color of the leading (first) character of each stream.
+# Accepted: color name or "#rrggbb".  Default: "#00ff00" (bright green)
+head_color = "#00ff00"
+
+# Color of the front half of each trail.
+# Accepted: color name or "#rrggbb".  Default: "#00af00" (green)
+color = "#00af00"
+
+# Color of the back half of each trail (the fading end).
+# Accepted: color name or "#rrggbb".  Default: "#005f00" (dark green)
+trail_color = "#005f00"
+
+# Draw the leading character in bold, which most terminals show brighter.
+# Accepted: true or false.  Default: true
+bold_head = true
+
+# Additionally apply the terminal's "dim" attribute to the trail.
+# Accepted: true or false.  Default: false
+# Limitation: on terminals with fewer than 256 colors the trail is dimmed
+# regardless of this setting.
+dim_trail = false
+
+# Example: cyan rain
+# head_color  = "#00ffff"
+# color       = "#00afaf"
+# trail_color = "#005f5f"
+
+
+[animation]
+# Each stream gets a random fall speed between speed_min and speed_max,
+# measured in terminal rows per second.
+# Accepted: number 0.5-200.  Defaults: speed_min = 6, speed_max = 30
+# Dependency: speed_min must not exceed speed_max, otherwise both revert to
+# their defaults.
+speed_min = 30
+speed_max = 60
+
+# Each stream gets a random length between length_min and length_max,
+# measured in characters (including the head).
+# length_min accepted: integer 1-1000.  Default: 6
+# length_max accepted: integer 0-1000.  Default: 0, meaning "the terminal's
+#   height", so the longest trails span the whole screen.
+# Dependency: a non-zero length_max must not be smaller than length_min,
+# otherwise both revert to their defaults. If length_min is larger than the
+# terminal height, streams are simply longer than the screen.
+length_min = 6
+length_max = 0
+
+# Fraction of columns that carry a stream at any moment. 1.0 fills every
+# column; lower values leave gaps for a sparser rain.
+# Accepted: number 0.05-1.0.  Default: 1.0
+density = 1.0
+
+# Example: sparse, slow, short rain
+# density   = 0.3
+# speed_min = 3
+# speed_max = 10
+# length_max = 12
+
+
+[behavior]
+# true  = at startup (and on restart/resize) streams are already spread over
+#         the whole screen.
+# false = all streams start above the screen and fall in.
+# Accepted: true or false.  Default: true
+initial_scatter = true
+
+# Start paused. Press P to begin.
+# Accepted: true or false.  Default: false
+start_paused = false
