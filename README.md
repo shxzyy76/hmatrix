@@ -35,7 +35,7 @@ You need a C17 compiler (GCC), CMake 3.10 or newer, and the ncurses
 
 ### 2. Get the source and build
 
-    git clone https://github.com/<your-username>/hmatrix.git
+    git clone https://github.com/Shxzyy76/hmatrix.git
     cd hmatrix
     cmake -B build
     cmake --build build
