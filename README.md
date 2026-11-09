@@ -1,278 +1,134 @@
 # HMatrix
 
-A lightweight terminal digital-rain animation in C17 and ncurses. It shows
-only the characters `0` and `1` by default, falling in green streams over
-your terminal's own background, so transparency and wallpapers stay visible.
+**HMatrix** is an independent implementation inspired by [CMatrix](https://github.com/abishekvashok/cmatrix), bringing the classic terminal digital rain effect with a binary twist.
+
+Instead of the usual streams of random characters, HMatrix displays `0`s and `1`s by default, falling in green streams over your terminal's own background.
 
 ## Features
 
-- Vertical streams with random speed, length and starting position
-- Bright head, fading green trail, drawn directly over the terminal background
-- Fully configurable through a documented TOML file (colors, characters, speed, density, FPS, ...)
-- Configurable frame rate for low CPU use; no allocation inside the animation loop
-- Handles terminal resizing, tiny terminals, and terminals with few or no colors
-- Clean terminal restore on quit, `Ctrl-C` and `SIGTERM`
+- Independent implementation inspired by CMatrix.
+- Binary digital rain using `0` and `1` by default.
+- Customizable characters and color schemes.
+- Fully configurable through a documented `hmatrix.toml` file.
+- Adjustable animation speed, stream density, length, and FPS.
+- Bright stream heads with fading trails.
+- Preserves terminal transparency and wallpapers.
+- Lightweight animation with efficient CPU usage.
+- Handles terminal resizing and different terminal color capabilities.
+- Keyboard controls for pausing, restarting, and quitting.
 
-## Dependencies
+## Installation & Building
 
-- GCC (or any C17 compiler), CMake >= 3.10
-- ncurses development files (`ncurses` on Arch, `libncurses-dev` on Debian/Ubuntu, `ncurses-devel` on Fedora)
-- [tomlc17](https://github.com/cktan/tomlc17) (MIT) for TOML parsing. It is vendored in `third_party/tomlc17/`, so there is nothing extra to install.
+### Requirements
 
-## Installation (Linux)
+- Linux
+- GCC or another C17-compatible compiler
+- CMake 3.10 or newer
+- ncurses development libraries
 
-### 1. Install the build tools and ncurses
+### Install dependencies
 
-| Distribution | Command |
-|--------------|---------|
-| Arch / CachyOS / Manjaro | `sudo pacman -S --needed base-devel cmake ncurses` |
-| Debian / Ubuntu / Mint | `sudo apt install build-essential cmake libncurses-dev` |
-| Fedora / RHEL | `sudo dnf install gcc cmake ncurses-devel` |
-| openSUSE | `sudo zypper install gcc cmake ncurses-devel` |
+**Arch Linux / CachyOS / Manjaro**
 
-You need a C17 compiler (GCC), CMake 3.10 or newer, and the ncurses
-(wide-character) development files.
+```bash
+sudo pacman -S --needed base-devel cmake ncurses
+```
 
-### 2. Get the source and build
+**Debian / Ubuntu / Linux Mint**
 
-    git clone https://github.com/Shxzyy76/hmatrix.git
-    cd hmatrix
-    cmake -B build
-    cmake --build build
+```bash
+sudo apt install build-essential cmake libncurses-dev
+```
 
-### 3. Run it
+**Fedora**
 
-    ./build/hmatrix
+```bash
+sudo dnf install gcc cmake ncurses-devel
+```
 
-This works straight from the source tree and uses the `config/hmatrix.toml`
-shipped with it.
+**openSUSE**
 
-### 4. Install (optional)
+```bash
+sudo zypper install gcc cmake ncurses-devel
+```
 
-System-wide, to `/usr/local`:
+### Clone the repository
 
-    sudo cmake --install build
+```bash
+git clone https://github.com/Shxzyy76/hmatrix.git
+cd hmatrix
+```
 
-Or only for your user, to `~/.local` (make sure `~/.local/bin` is in your `PATH`):
+### Build
 
-    cmake --install build --prefix ~/.local
+```bash
+cmake -B build
+cmake --build build
+```
 
-This installs the `hmatrix` binary to `bin/` and the sample config to
-`share/hmatrix/`. Then run `hmatrix` from anywhere.
+### Run
 
-To uninstall, remove the installed files (use `sudo` for a system-wide install):
+```bash
+./build/hmatrix
+```
 
-    xargs rm < build/install_manifest.txt
+### Optional: Install system-wide
 
-### 5. Personal config (optional)
+```bash
+sudo cmake --install build
+```
 
-The config in the source tree (or in `share/hmatrix/` once installed) is used
-by default. To keep your own settings, which take priority over it, copy it to
-your home directory and edit the copy:
+Or install locally:
 
-    mkdir -p ~/.config/hmatrix
-    cp config/hmatrix.toml ~/.config/hmatrix/
-    $EDITOR ~/.config/hmatrix/hmatrix.toml
+```bash
+cmake --install build --prefix ~/.local
+```
 
-See the [configuration reference](#configuration-reference) below.
-
-### Troubleshooting
-
-- **`Could NOT find Curses`**: the ncurses development package is missing;
-  install it as in step 1.
-- **Non-ASCII characters show as `?`**: your terminal and locale must be UTF-8.
-  Check with `locale charmap`, which should print `UTF-8`.
-- **Colors look wrong**: use a 256-color terminal (`echo $TERM` should contain
-  `256color`, for example `xterm-256color`).
-
-## Windows (WSL)
-
-HMatrix is a normal Linux program, so it runs unchanged inside WSL (Windows
-Subsystem for Linux). Use WSL 2 with a distribution such as Ubuntu or Debian.
-
-### Install
-
-1. If you do not have WSL yet, open PowerShell as administrator and run
-   `wsl --install`, then restart and finish the distribution's first-run setup.
-2. Open the WSL terminal and follow the [Linux installation](#installation-linux)
-   steps above. For Ubuntu/Debian that is:
-
-       sudo apt update
-       sudo apt install build-essential cmake libncurses-dev git
-       git clone https://github.com/<your-username>/hmatrix.git
-       cd hmatrix
-       cmake -B build
-       cmake --build build
-       ./build/hmatrix
-
-Tips for WSL:
-
-- Clone and build inside the Linux filesystem (for example `~/hmatrix`), not
-  under `/mnt/c/...`. Builds there are much slower, and file permissions can
-  behave oddly.
-- Use [Windows Terminal](https://aka.ms/terminal) (the default on Windows 11).
-  It supports 256 colors, UTF-8 and background transparency. The legacy
-  `conhost` window may show wrong colors.
-- Transparency: enable acrylic or opacity in Windows Terminal's profile
-  settings. HMatrix does not draw a background, so it shows through.
-- If non-ASCII characters (katakana, blocks, ...) show as `?`, run
-  `locale charmap`. It should print `UTF-8`; if it does not, add
-  `export LANG=C.UTF-8` to `~/.bashrc` and restart the terminal.
-
-## Updating
-
-Run these in the folder you cloned (in WSL, the same steps apply):
-
-    cd hmatrix
-    git pull
-    cmake --build build
-
-Then run `./build/hmatrix` again. If you installed it with `cmake --install`,
-repeat that command afterwards (`sudo cmake --install build`, or
-`cmake --install build --prefix ~/.local`) so the installed copy is replaced.
-
-If the build fails after an update, do a clean rebuild:
-
-    rm -rf build
-    cmake -B build
-    cmake --build build
-
-Your personal config in `~/.config/hmatrix/hmatrix.toml` is never touched by
-an update. New releases may add options, so compare it with the shipped
-`config/hmatrix.toml` (for example `diff ~/.config/hmatrix/hmatrix.toml config/hmatrix.toml`)
-and copy over any options you want. Options you do not set keep their defaults.
+Make sure `~/.local/bin` is in your `PATH` for a local installation.
 
 ## Usage
 
-    hmatrix                          # uses the default lookup described below
-    hmatrix --config ./my.toml       # use a specific file
-    hmatrix --help
-    hmatrix --version
-
-### Command-line options
-
-| Option | Description |
-|--------|-------------|
-| `--config PATH` | Read configuration from `PATH` (`--config=PATH` also works). It is an error if the file cannot be opened. |
-| `--help`, `-h` | Show usage and exit. |
-| `--version` | Show the version and exit. |
-
-If `--config` is not given, the first file found among these is used:
-
-1. `~/.config/hmatrix/hmatrix.toml`
-2. `config/hmatrix.toml` next to the build (relative to the executable, so
-   `./build/hmatrix` uses the project's own file from any directory), or
-   `share/hmatrix/hmatrix.toml` after `cmake --install`
-
-If none exists, built-in defaults apply (the classic green binary rain).
-
-### Controls
-
-| Key | Action |
-|-----|--------|
-| `Q` or `Esc` | Quit |
-| `P` | Pause / resume |
-| `R` | Restart the animation |
-
-Resizing the terminal restarts the animation at the new size.
-
-## Configuration reference
-
-The file is TOML. Every option is optional; a missing option uses its default.
-An invalid value, unknown option or unknown section prints a warning to
-stderr and the default is used instead. A file that is not valid TOML is
-ignored entirely (with a warning). The fully commented file is
-[`config/hmatrix.toml`](config/hmatrix.toml).
-
-### `[general]`
-
-| Option | Accepted | Default | Description |
-|--------|----------|---------|-------------|
-| `fps` | integer 1-240 | `30` | Target frames per second. Lower = less CPU. |
-| `transparent_background` | `true` / `false` | `true` | `true` keeps the terminal's own background and transparency. `false` fills the screen with solid black. No effect on terminals without color. |
-
-### `[characters]`
-
-| Option | Accepted | Default | Description |
-|--------|----------|---------|-------------|
-| `chars` | any 1-256 single-width characters (UTF-8) | `"01"` | Your own character set, e.g. `"ｱｲｳｴｵ"`, `"░▒▓"`, `"0123456789ABCDEF"`. Repeating one makes it more likely (`"0001"`). Double-width characters (CJK, emoji) are rejected. |
-| `change_rate` | number 0-20 | `0.6` | Changes per on-screen character per second (shimmer). `0` = characters never change. |
-
-### `[appearance]`
-
-Colors are a name (`black`, `red`, `green`, `yellow`, `blue`, `magenta`,
-`cyan`, `white`; these follow your terminal theme), hex `"#rrggbb"`, or a 256-color palette number `0`-`255` (unquoted, e.g.
-`201`). Hex
-values are snapped to the nearest color of the 256-color palette. With fewer
-than 256 colors they fall back to the nearest of the 8 basic colors, and the
-trail is always dimmed.
-
-| Option | Accepted | Default | Description |
-|--------|----------|---------|-------------|
-| `head_color` | name, hex or 0-255 | `"#00ff00"` | Leading character of each stream. |
-| `color` | name, hex or 0-255 | `"#00af00"` | Front half of the trail. |
-| `trail_color` | name, hex or 0-255 | `"#005f00"` | Back (fading) half of the trail. |
-| `bold_head` | `true` / `false` | `true` | Draw the head in bold. |
-| `dim_trail` | `true` / `false` | `false` | Also apply the terminal "dim" attribute to the trail (always on with fewer than 256 colors). |
-
-### `[animation]`
-
-| Option | Accepted | Default | Description |
-|--------|----------|---------|-------------|
-| `speed_min` | number 0.5-200 | `6` | Slowest fall speed, rows per second. |
-| `speed_max` | number 0.5-200 | `30` | Fastest fall speed. Must be >= `speed_min`, else both revert to defaults. |
-| `length_min` | integer 1-1000 | `6` | Shortest stream, in characters. |
-| `length_max` | integer 0-1000 | `0` | Longest stream. `0` = terminal height. If non-zero it must be >= `length_min`, else both revert to defaults. |
-| `density` | number 0.05-1.0 | `1.0` | Fraction of columns carrying a stream at any moment. |
-
-### `[behavior]`
-
-| Option | Accepted | Default | Description |
-|--------|----------|---------|-------------|
-| `initial_scatter` | `true` / `false` | `true` | `true`: streams start spread over the screen. `false`: all start above the screen and fall in. |
-| `start_paused` | `true` / `false` | `false` | Start paused; press `P` to begin. |
-
-### Examples
-
-Cyan, sparse, slow rain over a transparent terminal:
-
-```toml
-[appearance]
-head_color  = "#00ffff"
-color       = "#00afaf"
-trail_color = "#005f5f"
-
-[animation]
-density   = 0.3
-speed_min = 3
-speed_max = 10
+```bash
+hmatrix
+hmatrix --config ./my.toml
+hmatrix --help
+hmatrix --version
 ```
 
-Hex digits at 15 FPS on a solid black background:
+### Keyboard Controls
 
-```toml
-[general]
-fps = 15
-transparent_background = false
+| Key          | Action            |
+| ------------ | ----------------- |
+| `Q` or `Esc` | Quit              |
+| `P`          | Pause / Resume    |
+| `R`          | Restart animation |
 
-[characters]
-chars = "0123456789ABCDEF"
+## Configuration
+
+HMatrix uses a TOML configuration file to customize its appearance and behavior.
+
+The default configuration is located at:
+
+```text
+config/hmatrix.toml
 ```
 
-The default file (every option at its default) is
-[`config/hmatrix.toml`](config/hmatrix.toml).
+You can customize:
 
-## Project layout
+- Characters displayed in the rain.
+- Head, stream, and trail colors.
+- Animation speed and density.
+- Stream length.
+- Frame rate.
+- Background transparency.
+- Initial animation behavior.
 
-    src/main.c        main loop, input, frame limiting
-    src/animation.c   stream and character state (no ncurses)
-    src/renderer.c    ncurses setup and drawing
-    src/config.c      TOML loading, validation, defaults
-    src/cli.c         command-line parsing
-    config/hmatrix.toml  documented default configuration
-    third_party/tomlc17  vendored TOML parser
+See [`config/hmatrix.toml`](config/hmatrix.toml) for all available options and their descriptions.
 
 ## License
 
-HMatrix is released under the MIT License (see `LICENSE`). The vendored
-tomlc17 library is also MIT licensed (see `third_party/tomlc17/LICENSE`).
+HMatrix is licensed under the **GNU General Public License v2.0 (GPL-2.0)**.
+
+See the [`LICENSE`](LICENSE) file for details.
+
+The vendored `tomlc17` library retains its own MIT license, available at [`third_party/tomlc17/LICENSE`](third_party/tomlc17/LICENSE).
