@@ -1,0 +1,39 @@
+# CMake build files
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+Testing/
+
+# Compiled objects and libraries
+*.o
+*.a
+*.so
+*.so.*
+
+# Executables
+/hmatrix
+
+# Debug files
+core
+core.*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Kate swap files
+*.kate-swp
