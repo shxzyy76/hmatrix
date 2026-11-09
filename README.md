@@ -85,6 +85,63 @@ See the [configuration reference](#configuration-reference) below.
 - **Colors look wrong**: use a 256-color terminal (`echo $TERM` should contain
   `256color`, for example `xterm-256color`).
 
+## Windows (WSL)
+
+HMatrix is a normal Linux program, so it runs unchanged inside WSL (Windows
+Subsystem for Linux). Use WSL 2 with a distribution such as Ubuntu or Debian.
+
+### Install
+
+1. If you do not have WSL yet, open PowerShell as administrator and run
+   `wsl --install`, then restart and finish the distribution's first-run setup.
+2. Open the WSL terminal and follow the [Linux installation](#installation-linux)
+   steps above. For Ubuntu/Debian that is:
+
+       sudo apt update
+       sudo apt install build-essential cmake libncurses-dev git
+       git clone https://github.com/<your-username>/hmatrix.git
+       cd hmatrix
+       cmake -B build
+       cmake --build build
+       ./build/hmatrix
+
+Tips for WSL:
+
+- Clone and build inside the Linux filesystem (for example `~/hmatrix`), not
+  under `/mnt/c/...`. Builds there are much slower, and file permissions can
+  behave oddly.
+- Use [Windows Terminal](https://aka.ms/terminal) (the default on Windows 11).
+  It supports 256 colors, UTF-8 and background transparency. The legacy
+  `conhost` window may show wrong colors.
+- Transparency: enable acrylic or opacity in Windows Terminal's profile
+  settings. HMatrix does not draw a background, so it shows through.
+- If non-ASCII characters (katakana, blocks, ...) show as `?`, run
+  `locale charmap`. It should print `UTF-8`; if it does not, add
+  `export LANG=C.UTF-8` to `~/.bashrc` and restart the terminal.
+
+## Updating
+
+Run these in the folder you cloned (in WSL, the same steps apply):
+
+    cd hmatrix
+    git pull
+    cmake --build build
+
+Then run `./build/hmatrix` again. If you installed it with `cmake --install`,
+repeat that command afterwards (`sudo cmake --install build`, or
+`cmake --install build --prefix ~/.local`) so the installed copy is replaced.
+
+If the build fails after an update, do a clean rebuild:
+
+    rm -rf build
+    cmake -B build
+    cmake --build build
+
+Your personal config in `~/.config/hmatrix/hmatrix.toml` is never touched by
+an update. New releases may add options, so compare it with the shipped
+`config/hmatrix.toml` (for example `diff ~/.config/hmatrix/hmatrix.toml config/hmatrix.toml`)
+and copy over any options you want. Options you do not set keep their defaults.
+
 ## Usage
 
     hmatrix                          # uses the default lookup described below
